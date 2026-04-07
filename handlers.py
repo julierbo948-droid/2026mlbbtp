@@ -101,7 +101,12 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
         user_v_bal = user_wallet.get(v_bal_key, 0.0) if user_wallet else 0.0
             
         start_time = time.time()
-        loading_msg = await message.reply(f"in processing [ {len(parsed_orders)} | 0 ] ● ᥫ᭡")
+
+# စာသားတွေအားလုံးဖြုတ်ပြီး Emoji သီးသန့်ပဲ ထားလိုက်တဲ့ပုံစံ
+loading_msg = await message.reply(
+    "<tg-emoji emoji-id='6186016335294636592'>❤️</tg-emoji>",
+    parse_mode=ParseMode.HTML
+)
 
         current_v_bal = [user_v_bal] 
 

@@ -283,8 +283,8 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
             for pr in res['package_results']:
                 safe_ig_name = html.escape(str(pr['ig_name']))
 
-                 report += f"━━━━━━━━━━━━━━━━━\n"
                 if pr['status'] == 'success':
+                    report += f"━━━━━━━━━━━━━━━━━━━━━\n"
                     report += f"ORDER STATUS : ✅ Success\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"
                     report += f"IG NAME      : {safe_ig_name}\n"
@@ -325,7 +325,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
                     report += f"ITEM         : {pr['pkg_name']} 💎\n"
                     report += f"ERROR        : {display_err}\n\n"
 
-            report += f"━━━━━━━━━━━━━━━━━\n"
+            report += f"━━━━━━━━━━━━━━━━━━━━━\n"
             report += f"DATE         : {date_str}\n"
             report += f"===== {user_link} =====\n"
             report += f"INITIAL      : ${initial_bal_for_receipt:,.2f}\n"

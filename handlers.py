@@ -108,7 +108,7 @@ loading_msg = await message.reply(
     parse_mode=ParseMode.HTML
 )
 
-        current_v_bal = [user_v_bal] 
+current_v_bal = [user_v_bal] 
 
         async def process_order_line(order):
             game_id = order['game_id']

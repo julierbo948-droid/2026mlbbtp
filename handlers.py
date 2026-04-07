@@ -282,7 +282,8 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
 
             for pr in res['package_results']:
                 safe_ig_name = html.escape(str(pr['ig_name']))
-                
+
+                 report += f"━━━━━━━━━━━━━━━━━\n"
                 if pr['status'] == 'success':
                     report += f"ORDER STATUS : ✅ Success\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"

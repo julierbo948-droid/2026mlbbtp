@@ -746,7 +746,7 @@ async def handle_check_role(message: types.Message):
         return await message.reply("❌ Invalid format. Use: `.region 12345678 1234`")
     
     game_id, zone_id = match.group(1).strip(), match.group(2).strip()
-    loading_msg = await message.reply("Checking account data...", parse_mode=ParseMode.HTML)
+    loading_msg = await message.reply("<tg-emoji emoji-id='6186016335294636592'>❤️</tg-emoji>", parse_mode=ParseMode.HTML)
 
     # ⚠️ သင့်ရဲ့ API အသစ် Link ကို ဒီနေရာမှာ အစားထိုးထည့်ပေးပါ
     api_url = 'https://yanjiestore.com/index.php/check-region-mlbb'

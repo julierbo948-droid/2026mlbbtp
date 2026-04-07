@@ -324,6 +324,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
                     report += f"ITEM         : {pr['pkg_name']} 💎\n"
                     report += f"ERROR        : {display_err}\n\n"
 
+            report += f"━━━━━━━━━━━━━━━━━\n"
             report += f"DATE         : {date_str}\n"
             report += f"===== {user_link} =====\n"
             report += f"INITIAL      : ${initial_bal_for_receipt:,.2f}\n"
@@ -412,7 +413,7 @@ async def handle_smart_cookie_update(message: types.Message):
 async def add_balance_command(message: types.Message):
     if message.from_user.id != OWNER_ID: return await message.reply("❌ You are not authorized.")
     parts = message.text.strip().split()
-    if len(parts) < 3: return await message.reply("⚠️ **Usage format:**\n`.addbal <User_ID> <Amount> [BR/PH]`")
+    if len(parts) < 3: return await message.reply("⚠️ <b>Usage format:</b>\n`.addbal <User_ID> <Amount> [BR/PH]`")
     target_id = parts[1]
     try: amount = float(parts[2])
     except ValueError: return await message.reply("❌ Invalid amount.")
@@ -427,7 +428,7 @@ async def add_balance_command(message: types.Message):
     updated_wallet = await db.get_reseller(target_id)
     new_br = updated_wallet.get('br_balance', 0.0)
     new_ph = updated_wallet.get('ph_balance', 0.0)
-    await message.reply(f"✅ **Balance Added Successfully!**\n\n👤 **User ID:** `{target_id}`\n💰 **Added:** `+{amount:,.2f} {currency}`\n\n📊 **Current Balance:**\n🇧🇷 BR: `${new_br:,.2f}`\n🇵🇭 PH: `${new_ph:,.2f}`")
+    await message.reply(f"✅ <b>Balance Added Successfully!</b>\n\n👤 <b>User ID:</b> `{target_id}`\n💰 <b>Added:</b> `+{amount:,.2f} {currency}`\n\n📊 <b>Current Balance:</b>\n🇧🇷 BR: `${new_br:,.2f}`\n🇵🇭 PH: `${new_ph:,.2f}`")
 
 @dp.message(or_f(Command("deduct"), F.text.regexp(r"(?i)^\.deduct(?:$|\s+)")))
 async def deduct_balance_command(message: types.Message):
@@ -448,7 +449,7 @@ async def deduct_balance_command(message: types.Message):
     updated_wallet = await db.get_reseller(target_id)
     new_br = updated_wallet.get('br_balance', 0.0)
     new_ph = updated_wallet.get('ph_balance', 0.0)
-    await message.reply(f"✅ **Balance Deducted Successfully!**\n\n👤 **User ID:** `{target_id}`\n💸 **Deducted:** `-{amount:,.2f} {currency}`\n\n📊 **Current Balance:**\n🇧🇷 BR: `${new_br:,.2f}`\n🇵🇭 PH: `${new_ph:,.2f}`")
+    await message.reply(f"✅ <b>Balance Deducted Successfully!</b>\n\n👤 **User ID:** `{target_id}`\n💸 <b>Deducted:</b> `-{amount:,.2f} {currency}`\n\n📊 <b>Current Balance:</b>\n🇧🇷 BR: `${new_br:,.2f}`\n🇵🇭 PH: `${new_ph:,.2f}`")
 
 @dp.message(F.text.regexp(r"(?i)^\.topup\s+([a-zA-Z0-9]+)"))
 async def handle_topup(message: types.Message):
@@ -545,9 +546,9 @@ async def handle_topup(message: types.Message):
             else:
                 if user_id_int == OWNER_ID: fee_percent = 0.0
                 else:
-                    if added_amount >= 10000: fee_percent = 0
-                    elif added_amount >= 5000: fee_percent = 0
-                    elif added_amount >= 1000: fee_percent = 0
+                    if added_amount >= 10000: fee_percent = 0.1
+                    elif added_amount >= 5000: fee_percent = 0.15
+                    elif added_amount >= 1000: fee_percent = 0.2
                     else: fee_percent = 0.0
 
                 fee_amount = round(added_amount * (fee_percent / 100), 2)
@@ -574,7 +575,7 @@ async def check_balance_command(message: types.Message):
     user_wallet = await db.get_reseller(tg_id)
     if not user_wallet: return await message.reply("Yᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ɪɴғᴏʀᴍᴀᴛɪᴏɴ ᴄᴀɴɴᴏᴛ ʙᴇ ғᴏᴜɴᴅ.")
     
-    ICON_EMOJI = "5956330306167376831" 
+    ICON_EMOJI = "6179070080391848842" 
     BR_EMOJI = "5228878788867142213"   
     PH_EMOJI = "5231361434583049965"   
 
@@ -607,15 +608,15 @@ async def send_order_history(message: types.Message):
         response_text += (f"🆔 Game ID: {order['game_id']}\n🌏 Zone ID: {order['zone_id']}\n💎 Pack: {order['item_name']}\n🆔 Order ID: {order['order_id']}\n📅 Date: {order['date_str']}\n💲 Rate: ${order['price']:,.2f}\n📊 Status: {order['status']}\n────────────────\n")
     file_bytes = response_text.encode('utf-8')
     document = BufferedInputFile(file_bytes, filename=f"History_{tg_id}.txt")
-    await message.answer_document(document=document, caption=f"📜 **Order History**\n👤 User: @{user_name}\n📊 Records: {len(history_data)}")
+    await message.answer_document(document=document, caption=f"📜 Order History\n👤 User: @{user_name}\n📊 Records: {len(history_data)}")
 
 @dp.message(or_f(Command("clean"), F.text.regexp(r"(?i)^\.clean$")))
 async def clean_order_history(message: types.Message):
     if not await is_authorized(message.from_user.id): return await message.reply("ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴜsᴇʀ.")
     tg_id = str(message.from_user.id)
     deleted_count = await db.clear_user_history(tg_id)
-    if deleted_count > 0: await message.reply(f"🗑️ **History Cleaned Successfully.**\nDeleted {deleted_count} order records from your history.")
-    else: await message.reply("📜 **No Order History Found to Clean.**")
+    if deleted_count > 0: await message.reply(f"🗑️ History Cleaned Successfully.\nDeleted {deleted_count} order records from your history.")
+    else: await message.reply("📜 No Order History Found to Clean.")
 
 @dp.message(F.text.regexp(r"(?i)^(?:msc|mlb|br|b)\s+\d+"))
 async def handle_br_mlbb(message: types.Message):
@@ -752,7 +753,7 @@ async def handle_check_role(message: types.Message):
         return await message.reply("❌ Invalid format. Use: `.region 12345678 1234`")
     
     game_id, zone_id = match.group(1).strip(), match.group(2).strip()
-    loading_msg = await message.reply("<tg-emoji emoji-id='6186016335294636592'>❤️</tg-emoji>", parse_mode=ParseMode.HTML)
+    loading_msg = await message.reply("<tg-emoji emoji-id='6186254847713484259'>❤️</tg-emoji>", parse_mode=ParseMode.HTML)
 
     # ⚠️ သင့်ရဲ့ API အသစ် Link ကို ဒီနေရာမှာ အစားထိုးထည့်ပေးပါ
     api_url = 'https://yanjiestore.com/index.php/check-region-mlbb'
@@ -787,7 +788,7 @@ async def handle_check_role(message: types.Message):
         if not data.get('status'):
             error_msg = data.get('msg') or data.get('message') or "Game ID သို့မဟုတ် Zone ID မှားယွင်းနေပါသည်။"
             return await loading_msg.edit_text(
-                f"❌ **Invalid Account:** <code>{error_msg}</code>",
+                f"❌ <b>Invalid Account:</b> <code>{error_msg}</code>",
                 parse_mode=ParseMode.HTML
             )
 
@@ -1006,7 +1007,7 @@ async def handle_check_role(message: types.Message):
     if not match: return await message.reply("❌ Invalid format. Use: `.role 12345678 1234`")
     
     game_id, zone_id = match.group(1).strip(), match.group(2).strip()
-    loading_msg = await message.reply("Checking account data...", parse_mode=ParseMode.HTML)
+    loading_msg = await message.reply("<tg-emoji emoji-id='6186254847713484259'>❤️</tg-emoji>", parse_mode=ParseMode.HTML)
 
     # ---------------------------------------------------------
     # ၁။ Caliph Dev API (Name, Region စစ်ဆေးရန်)
@@ -1060,7 +1061,7 @@ async def handle_check_role(message: types.Message):
                 region = result_data.get('country', 'Unknown')
             else:
                 error_msg = data_caliph.get('message') or data_caliph.get('msg') or "Game ID သို့မဟုတ် Zone ID မှားယွင်းနေပါသည်။"
-                return await loading_msg.edit_text(f"❌ **Invalid Account:** {error_msg}", parse_mode=ParseMode.HTML)
+                return await loading_msg.edit_text(f"❌ <b>Invalid Account:</b> {error_msg}", parse_mode=ParseMode.HTML)
 
         except Exception as e:
         
@@ -1133,7 +1134,7 @@ async def check_official_customer(message: types.Message):
     search_queries = list(dict.fromkeys(parts[1:]))
     search_set = set(search_queries)
     
-    loading_msg = await message.reply(f"🔍 Deep Searching Official Records for <b>{len(search_queries)}</b> IDs...\n*(ဆာဗာလုံခြုံရေးအတွက် ၅ စက္ကန့်စီ ခြား၍ ရှာဖွေနေပါသည် ⏳)*", parse_mode=ParseMode.HTML)
+    loading_msg = await message.reply(f"🔍 Deep Searching Official Records for <b>{len(search_queries)}</b> IDs...\n<b>(ဆာဗာလုံခြုံရေးအတွက် ၅ စက္ကန့်စီ ခြား၍ ရှာဖွေနေပါသည် ⏳)</b>", parse_mode=ParseMode.HTML)
     
     scraper = await get_main_scraper()
     headers = {'X-Requested-With': 'XMLHttpRequest', 'Origin': 'https://www.smile.one'}
@@ -1250,7 +1251,7 @@ async def check_official_customer(message: types.Message):
     caption = f"🎉 <b>Oғғɪᴄɪᴀʟ Rᴇᴄᴏʀᴅs Sᴇᴀʀᴄʜ Cᴏᴍᴘʟᴇᴛᴇᴅ</b>\n\n"
     caption += f"🔍 IDs Checked: <b>{len(search_queries)}</b>\n"
     caption += f"📦 Total Found: <b>{len(found_orders)}</b>\n\n"
-    caption += f"*(အသေးစိတ်ကို အောက်ပါ .txt ဖိုင်တွင် ဝင်ရောက်ကြည့်ရှုပါ)*"
+    caption += f"<b>(အသေးစိတ်ကို အောက်ပါ .txt ဖိုင်တွင် ဝင်ရောက်ကြည့်ရှုပါ)</b>"
     
     await loading_msg.delete()
     await message.reply_document(
@@ -1359,16 +1360,16 @@ async def toggle_maintenance(message: types.Message):
         
     parts = message.text.strip().lower().split()
     if len(parts) < 2 or parts[1] not in ["enable", "disable"]:
-        return await message.reply("⚠️ **Usage:** `.maintenance enable` သို့မဟုတ် `.maintenance disable`")
+        return await message.reply("⚠️ <b>Usage:</b> `.maintenance enable` သို့မဟုတ် `.maintenance disable`")
         
     action = parts[1]
     
     if action == "enable":
         config.IS_MAINTENANCE = True
-        await message.reply("✅ **Maintenance Mode ENABLED.**\nယခုအချိန်မှစ၍ Admin မှလွဲ၍ အခြား User များ Bot ကို အသုံးပြု၍ မရတော့ပါ။")
+        await message.reply("✅ <b>Maintenance Mode ENABLED.</b>\nယခုအချိန်မှစ၍ Admin မှလွဲ၍ အခြား User များ Bot ကို အသုံးပြု၍ မရတော့ပါ။")
     elif action == "disable":
         config.IS_MAINTENANCE = False
-        await message.reply("✅ **Maintenance Mode DISABLED.**\nBot ကို ပုံမှန်အတိုင်း ပြန်လည်အသုံးပြုနိုင်ပါပြီ။")
+        await message.reply("✅ <b>Maintenance Mode DISABLED.</b>\nBot ကို ပုံမှန်အတိုင်း ပြန်လည်အသုံးပြုနိုင်ပါပြီ။")
 
 @dp.message(or_f(Command("scam"), F.text.regexp(r"(?i)^\.scam(?:$|\s+)")))
 async def add_scam_id(message: types.Message):
@@ -1377,7 +1378,7 @@ async def add_scam_id(message: types.Message):
         
     parts = message.text.strip().split()
     if len(parts) < 2:
-        return await message.reply("⚠️ **Usage:** `.scam <Game_ID>`\nဥပမာ: `.scam 123456789`")
+        return await message.reply("⚠️ <b>Usage:</b> `.scam <Game_ID>`\nဥပမာ: `.scam 123456789`")
         
     scam_id = parts[1].strip()
     if not scam_id.isdigit():
@@ -1386,7 +1387,7 @@ async def add_scam_id(message: types.Message):
     await db.add_scammer(scam_id)
     config.GLOBAL_SCAMMERS.add(scam_id)
     
-    await message.reply(f"🚨 **Scammer ID Added:** <code>{scam_id}</code>\n✅ ဤ ID ကို Blacklist သို့ ထည့်သွင်းပြီးပါပြီ။ တွေ့တာနဲ့ Bot မှ အလိုအလျောက် သတိပေးပါတော့မည်။", parse_mode=ParseMode.HTML)
+    await message.reply(f"🚨 <b>Scammer ID Added:</b> <code>{scam_id}</code>\n✅ ဤ ID ကို Blacklist သို့ ထည့်သွင်းပြီးပါပြီ။ တွေ့တာနဲ့ Bot မှ အလိုအလျောက် သတိပေးပါတော့မည်။", parse_mode=ParseMode.HTML)
 
 @dp.message(or_f(Command("unscam"), F.text.regexp(r"(?i)^\.unscam(?:$|\s+)")))
 async def remove_scam_id(message: types.Message):
@@ -1395,7 +1396,7 @@ async def remove_scam_id(message: types.Message):
         
     parts = message.text.strip().split()
     if len(parts) < 2:
-        return await message.reply("⚠️ **Usage:** `.unscam <Game_ID>`")
+        return await message.reply("⚠️ <bb>Usage:</b> `.unscam <Game_ID>`")
         
     scam_id = parts[1].strip()
     
@@ -1403,7 +1404,7 @@ async def remove_scam_id(message: types.Message):
     config.GLOBAL_SCAMMERS.discard(scam_id)
     
     if removed:
-        await message.reply(f"✅ **Scammer ID Removed:** <code>{scam_id}</code>\nBlacklist ထဲမှ အောင်မြင်စွာ ဖယ်ရှားလိုက်ပါပြီ။", parse_mode=ParseMode.HTML)
+        await message.reply(f"✅ <b>Scammer ID Removed:</b> <code>{scam_id}</code>\nBlacklist ထဲမှ အောင်မြင်စွာ ဖယ်ရှားလိုက်ပါပြီ။", parse_mode=ParseMode.HTML)
     else:
         await message.reply(f"⚠️ ထို ID သည် Scammer စာရင်းထဲတွင် မရှိပါ။")
 
@@ -1416,7 +1417,7 @@ async def show_scam_list(message: types.Message):
         return await message.reply("✅ ယခုလောလောဆယ် Blacklist သွင်းထားသော Scammer မရှိပါ။")
         
     scam_text = "\n".join([f"🔸 <code>{sid}</code>" for sid in config.GLOBAL_SCAMMERS])
-    await message.reply(f"🚨 **Scammer Blacklist (Total: {len(config.GLOBAL_SCAMMERS)}):**\n\n{scam_text}", parse_mode=ParseMode.HTML)
+    await message.reply(f"🚨 <b>Scammer Blacklist (Total: {len(config.GLOBAL_SCAMMERS)}):</b>\n\n{scam_text}", parse_mode=ParseMode.HTML)
 
 @dp.message(or_f(Command("help"), F.text.regexp(r"(?i)^\.help$")))
 async def send_help_message(message: types.Message):
@@ -1441,7 +1442,12 @@ async def send_help_message(message: types.Message):
         f"🔹 <code>.listb</code>     : BR ဈေးနှုန်းစာရင်း ကြည့်ရန်\n"
         f"🔹 <code>.listp</code>     : PH ဈေးနှုန်းစာရင်း ကြည့်ရန်\n"
         f"🔹 <code>.listmb</code>    : MCC ဈေးနှုန်းစာရင်း ကြည့်ရန်\n"
-        f"💡 <i>Tip: 50+50 ဟုရိုက်ထည့်၍ ဂဏန်းပေါင်းစက်အဖြစ် သုံးနိုင်ပါသည်။</i>\n"
+        f"💡 <i>Tip: 50+50 ဟုရိုက်ထည့်၍ ဂဏန်းပေါင်းစက်အဖြစ် သုံးနိုင်ပါသည်။</i>\n\n"
+        f"━━━━━━━━━━━━━━━━━\n\n"
+        f"<b>🚨 Scammer စီမံခန့်ခွဲမှု</b>\n"
+            f"🔸 <code>.scam ID</code>     : Scammer စာရင်းသွင်းရန်\n"
+            f"🔸 <code>.unscam ID</code>   : Scammer စာရင်းမှပယ်ဖျက်ရန်\n"
+            f"🔸 <code>.scamlist</code>    : Scammer အားလုံးကြည့်ရန်\n\n"
     )
     
     if is_owner:
@@ -1483,7 +1489,7 @@ async def send_welcome(message: types.Message):
         safe_full_name = full_name.replace('<', '').replace('>', '')
         username_display = f'<a href="tg://user?id={tg_id}">{safe_full_name}</a>'
         
-        EMOJI_1, EMOJI_2, EMOJI_3, EMOJI_4, EMOJI_5 = "5956355397366320202", "5954097490109140119", "5958289678837746828", "5956330306167376831", "5954078884310814346"
+        EMOJI_1, EMOJI_2, EMOJI_3, EMOJI_4, EMOJI_5 = "6183519108164757054", "5316887736823591263", "5316728625465146646", "5318760565902947324", "5316992572680320646"
 
         status = "🟢 Aᴄᴛɪᴠᴇ" if await is_authorized(message.from_user.id) else "🔴 Nᴏᴛ Aᴄᴛɪᴠᴇ"
         
@@ -1492,7 +1498,7 @@ async def send_welcome(message: types.Message):
             f"<tg-emoji emoji-id='{EMOJI_2}'>👤</tg-emoji> {'Usᴇʀɴᴀᴍᴇ' :<11}: {username_display}\n"
             f"<tg-emoji emoji-id='{EMOJI_3}'>🆔</tg-emoji> {'𝐈𝐃' :<11}: <code>{tg_id}</code>\n"
             f"<tg-emoji emoji-id='{EMOJI_4}'>📊</tg-emoji> {'Sᴛᴀᴛᴜs' :<11}: {status}\n\n"
-            f"<tg-emoji emoji-id='{EMOJI_5}'>📞</tg-emoji> {'Cᴏɴᴛᴀᴄᴛ ᴜs' :<11}: @iwillgoforwardsalone"
+            f"<tg-emoji emoji-id='{EMOJI_5}'>📞</tg-emoji> {'Cᴏɴᴛᴀᴄᴛ ᴜs' :<11}: @Julierbo2_151102"
         )
         await message.reply(welcome_text, parse_mode=ParseMode.HTML)
     except Exception:
@@ -1501,6 +1507,6 @@ async def send_welcome(message: types.Message):
             f"👤 {'Usᴇʀɴᴀᴍᴇ' :<11}: {full_name}\n"
             f"🆔 {'𝐈𝐃' :<11}: <code>{tg_id}</code>\n"
             f"📊 {'Sᴛᴀᴛᴜs' :<11}: 🔴 Nᴏᴛ Aᴄᴛɪᴠᴇ\n\n"
-            f"📞 {'Cᴏɴᴛᴀᴄᴛ ᴜs' :<11}: @iwillgoforwardsalone"
+            f"📞 {'Cᴏɴᴛᴀᴄᴛ ᴜs' :<11}: @Julierbo2_151102"
         )
         await message.reply(fallback_text, parse_mode=ParseMode.HTML)

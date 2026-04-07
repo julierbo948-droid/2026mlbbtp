@@ -100,16 +100,17 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
         user_wallet = await db.get_reseller(tg_id)
         user_v_bal = user_wallet.get(v_bal_key, 0.0) if user_wallet else 0.0
             
+        # start_time ရဲ့ ရှေ့မှာ Space (၈) ခု ရှိရပါမယ်
         start_time = time.time()
 
-# စာသားတွေအားလုံးဖြုတ်ပြီး Emoji သီးသန့်ပဲ ထားလိုက်တဲ့ပုံစံ
-loading_msg = await message.reply(
-    "<tg-emoji emoji-id='6186016335294636592'>❤️</tg-emoji>",
-    parse_mode=ParseMode.HTML
-)
+        # loading_msg ရဲ့ ရှေ့မှာလည်း Space (၈) ခု ရှိရပါမယ်
+        loading_msg = await message.reply(
+            "<tg-emoji emoji-id='6186016335294636592'>❤️</tg-emoji>",
+            parse_mode=ParseMode.HTML
+        )
 
-current_v_bal = [user_v_bal] 
-
+        # current_v_bal ရဲ့ ရှေ့မှာလည်း အပေါ်ကစာကြောင်းတွေနဲ့ တစ်တန်းတည်း (Space ၈ ခု) ဖြစ်ရပါမယ်
+        current_v_bal = [user_v_bal]
         async def process_order_line(order):
             game_id = order['game_id']
             zone_id = order.get('order_zone', order['zone_id'])

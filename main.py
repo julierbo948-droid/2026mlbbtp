@@ -122,7 +122,7 @@ async def schedule_morning_greeting():
 async def schedule_night_greeting():
     while True:
         now = datetime.datetime.now(MMT)
-        target = now.replace(hour=3, minute=20, second=0, microsecond=0)
+        target = now.replace(hour=23, minute=30, second=0, microsecond=0)
         if now >= target: target += datetime.timedelta(days=1)
         wait_seconds = (target - now).total_seconds()
         await asyncio.sleep(wait_seconds)

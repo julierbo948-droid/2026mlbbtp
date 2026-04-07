@@ -318,7 +318,8 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
                         if "wp" in pr['pkg_name'].lower():
                             if "unable" in error_text or "fail" in error_text or "error" in error_text:
                                 display_err = "Weekly Pass Limit Exceeded"
-                                
+
+                    report += f"━━━━━━━━━━━━━━━━━━━━━\n"
                     report += f"ORDER STATUS : ❌ FAILED\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"
                     report += f"IG NAME      : {safe_ig_name}\n"

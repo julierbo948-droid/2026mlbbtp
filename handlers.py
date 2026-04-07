@@ -360,7 +360,7 @@ async def list_resellers(message: types.Message):
         role = "owner" if r["tg_id"] == str(OWNER_ID) else "users"
         user_list.append(f"🟢 ID: `{r['tg_id']}` ({role})\n   BR: ${r.get('br_balance', 0.0)} | PH: ${r.get('ph_balance', 0.0)}")
     final_text = "\n\n".join(user_list) if user_list else "No users found."
-    await message.reply(f"🟢 **Approved users List (V-Wallet):**\n\n{final_text}")
+    await message.reply(f"🟢 **Approved users List (V-Wallet):**\n\n{final_text}",parse_mode="Markdown")
 
 @dp.message(Command("setcookie"))
 async def set_cookie_command(message: types.Message):

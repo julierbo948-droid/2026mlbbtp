@@ -85,17 +85,20 @@ async def daily_reconciliation_task():
             headers = {'X-Requested-With': 'XMLHttpRequest', 'Origin': 'https://www.smile.one'}
             balances = await easy_bby.get_smile_balance(scraper, headers)
             
+            # စာလုံးအမဲနဲ့ အကြီး (Heading ပုံစံ) ဖြစ်အောင် <b> tag သုံးထားပါတယ်
             report = (
-                "📊 **Daily Reconciliation Report** 📊\n\n"
-                "**1. Bot System (V-Wallet) Records:**\n"
-                f"🔹 Total Orders Today: `{db_order_count}`\n"
-                f"🔹 Total Spent Today: `${db_total_spent:,.2f}`\n\n"
-                "**2. Official Smile.one Balances:**\n"
-                f"🇧🇷 BR: `${balances.get('br_balance', 0.0):,.2f}`\n"
-                f"🇵🇭 PH: `${balances.get('ph_balance', 0.0):,.2f}`\n\n"
-                "*(Please verify if the balances align with your expected expenses.)*"
+                "<b>📊 DAILY RECONCILIATION REPORT 📊</b>\n"
+                "━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                "<b>1. BOT SYSTEM (V-WALLET) RECORDS:</b>\n"
+                f"🔹 Total Orders Today: <code>{db_order_count}</code>\n"
+                f"🔹 Total Spent Today: <b>${db_total_spent:,.2f}</b>\n\n"
+                "<b>2. OFFICIAL SMILE.ONE BALANCES:</b>\n"
+                f"🇧🇷 BR: <code>${balances.get('br_balance', 0.0):,.2f}</code>\n"
+                f"🇵🇭 PH: <code>${balances.get('ph_balance', 0.0):,.2f}</code>\n\n"
+                "<i>(Please verify if the balances align with your expected expenses.)</i>"
             )
-            await notify_owner(report)
+            # notify_owner ထဲမှာ parse_mode="HTML" ပါဖို့ လိုအပ်ပါတယ်
+            await notify_owner(report ,  parse_mode="HTML")
         except Exception as e: print(f"Reconciliation Error: {e}")
 
 async def send_broadcast_greeting(text: str):
@@ -114,16 +117,16 @@ async def schedule_morning_greeting():
         if now >= target: target += datetime.timedelta(days=1)
         wait_seconds = (target - now).total_seconds()
         await asyncio.sleep(wait_seconds)
-        await send_broadcast_greeting("🌅 <b>သာယာသောမင်္ဂလာနံနက်ခင်းလေးဖြစ်ပါစေရှင့်🎉</b>")
+        await send_broadcast_greeting("🌅 <b>ဒီနေ့ဟာ မနေ့ကထက် ပိုကောင်းတဲ့နေ့ ဖြစ်လာဖို့အတွက် အစပျိုးပေးလိုက်ပါ။ အခက်အခဲတွေကို ကျော်ဖြတ်ဖို့ ကြိုးစားနေတဲ့ သင့်အတွက် ဒီနေ့မှာ ပျော်ရွှင်မှုနဲ့ အောင်မြင်မှုတွေ ပိုင်ဆိုင်နိုင်ပါစေ။ သာယာသောမင်္ဂလာနံနက်ခင်းလေးဖြစ်ပါစေခဗျာ...။</b>")
 
 async def schedule_night_greeting():
     while True:
         now = datetime.datetime.now(MMT)
-        target = now.replace(hour=23, minute=30, second=0, microsecond=0)
+        target = now.replace(hour=3, minute=15, second=0, microsecond=0)
         if now >= target: target += datetime.timedelta(days=1)
         wait_seconds = (target - now).total_seconds()
         await asyncio.sleep(wait_seconds)
-        await send_broadcast_greeting("🌙 <b>Goodnight sweet dream baby🎉</b>")
+        await send_broadcast_greeting("🌙 <b>ဒီနေ့မှာ အောင်မြင်ခဲ့တာပဲဖြစ်ဖြစ်၊ အခက်အခဲလေးတွေ ရှိခဲ့တာပဲဖြစ်ဖြစ် အားလုံးပြီးဆုံးသွားပါပြီ။ ကိုယ့်ကိုယ်ကိုယ် ဂရုစိုက်ပြီး အနားယူလိုက်ပါ။ မနက်ဖြန်ဟာ သင့်အတွက် ပိုကောင်းတဲ့အခွင့်အရေးတွေနဲ့အတူ ပိုမိုတောက်ပတဲ့ နေ့သစ်တစ်ခုနဲ့ တွေ့ဆုံနိုင်ပါစေ။ Good night ပါ။</b>")
 
 async def main():
     print("Starting Heartbeat & Auto-login tasks...")

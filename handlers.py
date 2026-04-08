@@ -278,7 +278,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
             header_title = f"{title_prefix} {res['game_id']} ({res['zone_id']}) {res['raw_items_str'].upper()} ({currency})"
             
             report = f"<pre><code>{header_title}\n"
-            report += f"===== TRANSACTION REPORT =====\n\n"
+            report += f"===== TRANSACTION REPORT =====\n"
 
             for pr in res['package_results']:
                 safe_ig_name = html.escape(str(pr['ig_name']))

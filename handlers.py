@@ -285,11 +285,10 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
 
                 if pr['status'] == 'success':
                     report += f"━━━━━━━━━━━━━━━━━━━━━\n"
-                    report += f"ORDER STATUS : ✅ Success\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"
                     report += f"IG NAME      : {safe_ig_name}\n"
+                    report += f"ITEM         : {pr['pkg_name']} 💎 ✅\n"
                     report += f"SERIAL       :\n{pr['order_ids']}\n"
-                    report += f"ITEM         : {pr['pkg_name']} 💎\n"
                     report += f"SPENT        : {pr['spent']:.2f} 🪙\n\n"
                     
                     final_order_ids = pr['order_ids'].replace('\n', ', ')
@@ -320,10 +319,9 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
                                 display_err = "Weekly Pass Limit Exceeded"
 
                     report += f"━━━━━━━━━━━━━━━━━━━━━\n"
-                    report += f"<b>ဝယ်ယူမှု မအောင်မြင်ပါ။</b>\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"
                     report += f"IG NAME      : {safe_ig_name}\n"
-                    report += f"ITEM         : {pr['pkg_name']} 💎\n"
+                    report += f"ITEM         : {pr['pkg_name']} 💎 ❌\n"
                     report += f"ERROR        : {display_err}\n\n"
 
             report += f"━━━━━━━━━━━━━━━━━━━━━\n"

@@ -287,7 +287,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
                     report += f"━━━━━━━━━━━━━━━━━━━━━\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"
                     report += f"IG NAME      : {safe_ig_name}\n"
-                    report += f"ITEM         : {pr['pkg_name']} 💎 ✅\n"
+                    report += f"ITEM         : {pr['pkg_name']} 💎| ✅\n"
                     report += f"SERIAL       :\n{pr['order_ids']}\n"
                     report += f"SPENT        : {pr['spent']:.2f} 🪙\n\n"
                     
@@ -321,7 +321,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
                     report += f"━━━━━━━━━━━━━━━━━━━━━\n"
                     report += f"GAME ID      : {res['game_id']} {res['zone_id']}\n"
                     report += f"IG NAME      : {safe_ig_name}\n"
-                    report += f"ITEM         : {pr['pkg_name']} 💎 ❌\n"
+                    report += f"ITEM         : {pr['pkg_name']} 💎| ❌\n"
                     report += f"ERROR        : {display_err}\n\n"
 
             report += f"━━━━━━━━━━━━━━━━━━━━━\n"
@@ -330,7 +330,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
             report += f"INITIAL      : ${initial_bal_for_receipt:,.2f}\n"
             report += f"FINAL        : ${new_v_bal:,.2f}\n\n"
             report += f"SUCCESS {res['success_count']} / FAIL {res['fail_count']}\n"
-            report += f"TIME TAKEN   : {time_taken_seconds} SECONDS</code></pre>"
+            
 
             await message.reply(report, parse_mode=ParseMode.HTML)
 

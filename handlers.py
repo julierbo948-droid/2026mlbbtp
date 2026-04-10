@@ -736,16 +736,16 @@ async def auto_calculator(message: types.Message):
         try:
             from aiogram.types import CopyTextButton
             copy_btn = InlineKeyboardButton(
-                text=" ᴄᴏᴘʏ: {formatted_result} ", 
+                text=" ᴄᴏᴘʏ", 
                 copy_text=CopyTextButton(text=full_copy_text),
-                style="danger" 
+                style="danger",
                 icon_custom_emoji_id="5456498809875995940"
             )
         except ImportError:
             copy_btn = InlineKeyboardButton(
-                text=" ᴄᴏᴘʏ: {formatted_result} ", 
+                text=" ᴄᴏᴘʏ", 
                 switch_inline_query_current_chat=full_copy_text,
-                style="danger"
+                style="danger",
                 icon_custom_emoji_id="5456498809875995940"
             )
 

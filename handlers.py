@@ -724,7 +724,7 @@ async def auto_calculator(message: types.Message):
         if re.match(r"^09[-\s]?\d+", expr): return
         
         clean_expr = expr.replace(" ", "")
-        result = eval(clean_expr, {"builtins": None})
+        result = eval(clean_expr, {"__builtins__": None})
         
         if isinstance(result, float): 
             formatted_result = f"{result:.4f}".rstrip('0').rstrip('.')
@@ -733,15 +733,18 @@ async def auto_calculator(message: types.Message):
 
         full_copy_text = f"{expr} = {formatted_result}"
 
+        # သင်အသုံးပြုနေတဲ့ Library ရဲ့ ပုံစံအတိုင်း Copy Button ဖန်တီးခြင်း
         try:
+            # Telegram API 7.0+ ရဲ့ တိုက်ရိုက် Copy ကူးပေးတဲ့ Feature
             from aiogram.types import CopyTextButton
             copy_btn = InlineKeyboardButton(
                 text=" ᴄᴏᴘʏ", 
                 copy_text=CopyTextButton(text=full_copy_text),
                 style="danger",
-                icon_custom_emoji_id="5456498809875995940"
+                icon_custom_emoji_id="5456498809875995940"# အရောင်ပါအောင် style ထည့်ခြင်း
             )
         except ImportError:
+            # အပေါ်က method အလုပ်မလုပ်ရင် switch_inline သုံးမယ်
             copy_btn = InlineKeyboardButton(
                 text=" ᴄᴏᴘʏ", 
                 switch_inline_query_current_chat=full_copy_text,

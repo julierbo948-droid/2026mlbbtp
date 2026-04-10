@@ -722,12 +722,42 @@ async def auto_calculator(message: types.Message):
     try:
         expr = message.text.strip()
         if re.match(r"^09[-\s]?\d+", expr): return
+        
         clean_expr = expr.replace(" ", "")
-        result = eval(clean_expr, {"__builtins__": None})
-        if isinstance(result, float): formatted_result = f"{result:.4f}".rstrip('0').rstrip('.')
-        else: formatted_result = str(result)
-        await message.reply(f"{expr} = {formatted_result}")
-    except Exception: pass
+        result = eval(clean_expr, {"builtins": None})
+        
+        if isinstance(result, float): 
+            formatted_result = f"{result:.4f}".rstrip('0').rstrip('.')
+        else: 
+            formatted_result = str(result)
+
+        full_copy_text = f"{expr} = {formatted_result}"
+
+        try:
+            from aiogram.types import CopyTextButton
+            copy_btn = InlineKeyboardButton(
+                text=" ᴄᴏᴘʏ ", 
+                copy_text=CopyTextButton(text=full_copy_text),
+                style="danger" 
+            )
+        except ImportError:
+            copy_btn = InlineKeyboardButton(
+                text=" ᴄᴏᴘʏ ", 
+                switch_inline_query_current_chat=full_copy_text,
+                style="danger"
+            )
+
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[[copy_btn]])
+        
+        # Output ပြသခြင်း
+        await message.reply(
+            f"<b>{expr} =</b> <code>{formatted_result}</code>", 
+            parse_mode="HTML", 
+            reply_markup=keyboard
+        )
+        
+    except Exception: 
+        pass
 
 @dp.message(or_f(Command("cookies"), F.text.regexp(r"(?i)^\.cookies$")))
 async def check_cookie_status(message: types.Message):

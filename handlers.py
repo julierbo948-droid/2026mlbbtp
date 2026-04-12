@@ -280,7 +280,7 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
             
             header_title = f"{title_prefix} {res['game_id']} ({res['zone_id']}) {res['raw_items_str'].upper()} ({currency})"
             
-            report = f"<pre><code>{header_title}\n"
+            report = f"<blockquote><pre>{header_title}\n"
             report += f"===== TRANSACTION REPORT =====\n"
 
             for pr in res['package_results']:
@@ -329,13 +329,46 @@ async def execute_buy_process(message, lines, regex_pattern, currency, packages_
 
             report += f"━━━━━━━━━━━━━━━━━━━━━\n"
             report += f"DATE         : {date_str}\n"
-            report += f"===== {user_link} =====\n"
+            report += f"===== ACCOUNT INFO =====\n"
             report += f"INITIAL      : ${initial_bal_for_receipt:,.2f}\n"
             report += f"FINAL        : ${new_v_bal:,.2f}\n\n"
-            report += f"SUCCESS {res['success_count']} / FAIL {res['fail_count']}</code></pre>\n"
+            report += f"SUCCESS {res['success_count']} / FAIL {res['fail_count']}</pre></blockquote>"
             
 
-            await message.reply(report, parse_mode=ParseMode.HTML)
+
+            # (၁) ရလဒ်အပေါ် မူတည်ပြီး Button Style သတ်မှတ်ခြင်း
+            if res['fail_count'] > 0:
+                btn_style = "danger" 
+                btn_text = f"| {user_name}"
+                btn_icon = "6194857525473451865"
+            else:
+                btn_style = "success" 
+                btn_text = f"| {user_name}"
+                btn_icon = "6190228864988355594"
+
+            # (၂) Keyboard တည်ဆောက်ခြင်း
+            keyboard = InlineKeyboardMarkup(inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=btn_text,
+                        url=f"tg://user?id={tg_id}",
+                        style=btn_style ,
+                        icon_custom_emoji_id=btn_icon
+                    )
+                ]
+            ])
+
+
+            try:
+                await message.reply(
+                    report, 
+                    parse_mode="HTML", 
+                    reply_markup=keyboard
+                )
+            except Exception as e:
+                print(f"Final Report Error: {e}")
+                await message.reply(f"❌ Report Formatting Error!")
+
 
 @dp.message(or_f(Command("add"), F.text.regexp(r"(?i)^\.add(?:$|\s+)")))
 async def add_reseller(message: types.Message):

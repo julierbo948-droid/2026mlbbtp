@@ -659,6 +659,16 @@ async def clean_order_history(message: types.Message):
 async def handle_br_mlbb(message: types.Message):
     if not await is_authorized(message.from_user.id): 
         return await message.reply(f"ɴᴏᴛ ᴀᴜᴛʜᴏʀɪᴢᴇᴅ ᴜsᴇʀ.❌")
+    match = re.search(r"(?i)^(?:msc|mlb|br|b)\s*(\d+)", message.text.strip())
+    game_id = match.group(1) if match else None    
+
+    if game_id and str(game_id) in config.GLOBAL_SCAMMERS:
+        alert_text = (
+            f"<code>{message.text}</code>\n\n"
+            f"🚨 <b>Scammer Alert!</b>\n"
+            f"ဒီ Game ID (<code>{game_id}</code>) သည် Scammer စာရင်းထဲတွင် ပါဝင်နေပါသဖြင့် ဝယ်ယူခွင့်ကို ပိတ်ပင်ထားပါသည်။ ❌"
+        )
+        return await message.reply(alert_text, parse_mode=ParseMode.HTML)
     try:
         lines = [line.strip() for line in message.text.strip().split('\n') if line.strip()]
         regex = r"(?i)^(?:(?:b|br|mlb|msc)\s+)?(\d+)\s*\(?\s*(\d+)\s*\)?\s*(.+)$"
@@ -719,7 +729,6 @@ async def handle_br_mcc(message: types.Message):
             f"ဒီ Game ID (<code>{game_id}</code>) သည် Scammer စာရင်းထဲတွင် ပါဝင်နေပါသဖြင့် ဝယ်ယူခွင့်ကို ပိတ်ပင်ထားပါသည်။ ❌"
         )
         return await message.reply(alert_text, parse_mode=ParseMode.HTML)
-    try:    
     try:
         lines = [line.strip() for line in message.text.strip().split('\n') if line.strip()]
         regex = r"(?i)^(?:(?:mcc|mcb|mcp|mcgg)\s+)?(\d+)\s*\(?\s*(\d+)\s*\)?\s*(.+)$"
@@ -750,7 +759,6 @@ async def handle_ph_mcc(message: types.Message):
             f"ဒီ Game ID (<code>{game_id}</code>) သည် Scammer စာရင်းထဲတွင် ပါဝင်နေပါသဖြင့် ဝယ်ယူခွင့်ကို ပိတ်ပင်ထားပါသည်။ ❌"
         )
         return await message.reply(alert_text, parse_mode=ParseMode.HTML)
-    try:
     try:
         lines = [line.strip() for line in message.text.strip().split('\n') if line.strip()]
         regex = r"(?i)^(?:mcp\s+)?(\d+)\s*\(?\s*(\d+)\s*\)?\s*(.+)$"
